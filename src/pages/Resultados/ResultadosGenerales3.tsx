@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BarChart from '../../components/BarChart';
 import D3PieChart from '../../components/D3PieChart';
 import ResultsTable from '../../components/ResultsTable';
 import { useGetDepartmentsQuery } from '../../store/departments/departmentsEndpoints';
 import Breadcrumb2 from '../../components/Breadcrumb2';
+import { useSelector } from 'react-redux';
 import { Eye, FileText, Users, Table, BarChart3, PieChart } from 'lucide-react';
+import { selectFilters } from '../../store/resultados/resultadosSlice';
+import { useLazyGetResultsByLocationQuery } from '../../store/resultados/resultadosEndpoints';
 
 const combinedData = [
   { name: 'Party A', value: 100, color: '#FF6384' },
@@ -19,8 +22,38 @@ const combinedData = [
 
 const ResultadosGenerales3 = () => {
   // const [resultsData, setResultsData] = useState([]);
+  const [presidentialData, setPresidentialData] = useState([]);
   useGetDepartmentsQuery({});
+  const [getResultsByLocation] = useLazyGetResultsByLocationQuery({});
   const [activeTab, setActiveTab] = useState('table');
+  const filters = useSelector(selectFilters);
+
+  useEffect(() => {
+    if (filters) {
+      const cleanedFilters = Object.fromEntries(
+        Object.entries(filters).filter(
+          ([key, value]) => value !== '' && key !== 'electoralLocation'
+        )
+      );
+      console.log('Cleaned filters:', cleanedFilters);
+      getResultsByLocation({ ...cleanedFilters, electionType: 'presidential' })
+        .unwrap()
+        .then((data) => {
+          console.log('Fetched presidential data:', data);
+          const formattedData = data.results.map((item: any) => {
+            // Generate random hex color if color not provided
+            const randomColor =
+              '#' + Math.floor(Math.random() * 16777215).toString(16);
+            return {
+              name: item.partyId,
+              value: item.totalVotes,
+              color: item.color || randomColor, // Use random color as fallback
+            };
+          });
+          setPresidentialData(formattedData);
+        });
+    }
+  }, [filters]);
   // const { data: { results = [] } = {} } = useGetResultsQuery({
   //   department: selectedLocation.department || undefined,
   // });
@@ -149,6 +182,11 @@ const ResultadosGenerales3 = () => {
           <div>
             <Breadcrumb2 />
           </div>
+          <div className="bg-gray-50 rounded-lg shadow-sm p-4 mb-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">
+              Estadísticas
+            </h3>
+          </div>
           <div className="w-full flex flex-wrap gap-4">
             <div className="bg-gray-50 rounded-lg shadow-sm overflow-hidden basis-[min(420px,100%)] grow-3 shrink-0">
               {/* <div className="border-b border-gray-300 bg-gray-50 px-6 py-4">
@@ -198,15 +236,15 @@ const ResultadosGenerales3 = () => {
                   </div>
                 </div>
                 {activeTab === 'table' && (
-                  <ResultsTable resultsData={combinedData} />
+                  <ResultsTable resultsData={presidentialData} />
                 )}
-                {activeTab === 'bars' && <BarChart data={combinedData} />}
-                {activeTab === 'pie' && <D3PieChart data={combinedData} />}
+                {activeTab === 'bars' && <BarChart data={presidentialData} />}
+                {activeTab === 'pie' && <D3PieChart data={presidentialData} />}
               </div>
             </div>
             <div className="bg-gray-50 rounded-lg shadow-sm p-4 basis-[200px] grow-1 shrink-0">
               <h3 className="text-xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">
-                Datos estadísticos
+                Participacion
               </h3>
 
               <div className="flex flex-wrap gap-4">
@@ -214,7 +252,7 @@ const ResultadosGenerales3 = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">
-                        Número de actas
+                        Votos validos
                       </p>
                       <p className="text-2xl font-bold text-gray-800">360</p>
                     </div>
@@ -227,9 +265,7 @@ const ResultadosGenerales3 = () => {
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow basis-[min(200px,100%)] grow-1">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">
-                        Número de mesas
-                      </p>
+                      <p className="text-sm text-gray-600 mb-1">Votos nulos</p>
                       <p className="text-2xl font-bold text-gray-800">120</p>
                     </div>
                     <div className="bg-green-100 p-3 rounded-full">
@@ -242,8 +278,19 @@ const ResultadosGenerales3 = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">
-                        Número de atestiguamientos
+                        Votos en blanco
                       </p>
+                      <p className="text-2xl font-bold text-gray-800">1,000</p>
+                    </div>
+                    <div className="bg-purple-100 p-3 rounded-full">
+                      <Eye className="w-6 h-6 text-purple-600" />
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow basis-[min(200px,100%)] grow-1">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Total</p>
                       <p className="text-2xl font-bold text-gray-800">1,000</p>
                     </div>
                     <div className="bg-purple-100 p-3 rounded-full">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './Breadcrumb.module.css';
 import { ChevronRight } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { selectDepartments } from '../store/departments/departmentsSlice';
@@ -23,6 +23,7 @@ import {
   useLazyGetElectoralLocationQuery,
 } from '../store/electoralLocations/electoralLocationsEndpoints';
 import SimpleSearchBar from './SimpleSearchBar';
+import { setFilters } from '../store/resultados/resultadosSlice';
 
 interface LevelOption {
   _id: string;
@@ -50,27 +51,28 @@ interface SelectedLevel extends PathItem2 {
 
 const breadcrumbLevels = [
   {
-    id: 'departments',
+    id: 'department',
     title: 'Departamento',
   },
   {
-    id: 'provinces',
+    id: 'province',
     title: 'Provincia',
   },
   {
-    id: 'municipalities',
+    id: 'municipality',
     title: 'Municipio',
   },
   {
-    id: 'electoralSeats',
+    id: 'electoralSeat',
     title: 'Asiento Electoral',
   },
   {
-    id: 'electoralLocations',
+    id: 'electoralLocation',
     title: 'Recinto Electoral',
   },
 ];
 const Breadcrumb = () => {
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [getDepartment] = useLazyGetDepartmentQuery();
   const [getProvince] = useLazyGetProvinceQuery();
@@ -159,11 +161,11 @@ const Breadcrumb = () => {
         Object.fromEntries(searchParams.entries())
       );
       const {
-        departments: departmentId,
-        provinces: provinceId,
-        municipalities: municipalityId,
-        electoralSeats: electoralSeatId,
-        electoralLocations: electoralLocationId,
+        department: departmentId,
+        province: provinceId,
+        municipality: municipalityId,
+        electoralSeat: electoralSeatId,
+        electoralLocation: electoralLocationId,
       } = Object.fromEntries(searchParams.entries());
 
       const promises = [];
@@ -203,6 +205,11 @@ const Breadcrumb = () => {
             }
           }
           setSelectedPath2(newPath);
+          const filters = newPath.reduce((acc, item) => {
+            acc[item.id] = item.selectedOption?.name || '';
+            return acc;
+          }, {} as Record<string, string>);
+          dispatch(setFilters(filters));
         });
       }
       setIsInitialized(true);
@@ -236,6 +243,11 @@ const Breadcrumb = () => {
       selectedOption: optionClicked,
     };
     newPath.push(newItem);
+    const filters = newPath.reduce((acc, item) => {
+      acc[item.id] = item.selectedOption?.name || '';
+      return acc;
+    }, {} as Record<string, string>);
+    dispatch(setFilters(filters));
 
     setSelectedPath2(newPath);
 

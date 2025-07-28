@@ -6,7 +6,6 @@ import LoadingSkeleton from './components/LoadingSkeleton';
 import { useLazyGetProfileQuery } from './store/auth/authEndpoints';
 import ResultadosGenerales3 from './pages/Resultados/ResultadosGenerales3';
 import ResultadosMesa2 from './pages/Resultados/ResultadosMesa2';
-import ResultadosLocalidad from './pages/Resultados/ResultadosLocalidad';
 import ResultadosImagen from './pages/Resultados/ResultadosImagen';
 
 const Home = React.lazy(() => import('./pages/Home'));
@@ -70,10 +69,6 @@ const AppRouter: React.FC = () => {
             <Route path="/resultados" element={<ResultadosGenerales3 />} />
             <Route path="/resultados/mesa" element={<ResultadosMesa2 />} />
             <Route path="/resultados/imagen" element={<ResultadosImagen />} />
-            <Route
-              path="/resultados/localidad"
-              element={<ResultadosLocalidad />}
-            />
             <Route element={<ProtectedRoutes />}>
               <Route path="/panel" element={<PanelControl />} />
               <Route path="/partidos" element={<Partidos />} />
