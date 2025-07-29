@@ -1,96 +1,68 @@
+import actaImage from '../../assets/acta.jpg';
+
 interface Mesa {
+  id: number;
   number: number;
   code: string;
   status: 'unprocessed' | 'processed' | 'dispute';
   photoCount?: number; // Number of photos of the electoral sheet
+  person: string;
+  date: string;
+  imageCode: string;
+  votesInFavor: number;
+  votesAgainst: number;
 }
 
 const ImagesSection = () => {
   // Sample data - you can replace this with your actual data source
   const images: Mesa[] = [
-    { number: 1, code: 'M001', status: 'processed', photoCount: 3 },
-    { number: 2, code: 'M002', status: 'unprocessed' },
-    { number: 3, code: 'M003', status: 'dispute', photoCount: 2 },
-    { number: 4, code: 'M004', status: 'unprocessed' },
-    { number: 5, code: 'M005', status: 'processed', photoCount: 4 },
-    { number: 6, code: 'M006', status: 'unprocessed' },
-    { number: 7, code: 'M007', status: 'dispute', photoCount: 1 },
-    { number: 8, code: 'M008', status: 'unprocessed' },
+    {
+      id: 1,
+      number: 1,
+      code: 'M001',
+      status: 'processed',
+      photoCount: 3,
+      person: 'Juan Pérez',
+      date: '2025-01-15',
+      imageCode: 'IM778855',
+      votesInFavor: 12,
+      votesAgainst: 55,
+    },
+    {
+      id: 2,
+      number: 2,
+      code: 'M002',
+      status: 'unprocessed',
+      person: 'María García',
+      date: '2025-01-15',
+      imageCode: 'IM778856',
+      votesInFavor: 8,
+      votesAgainst: 42,
+    },
+    {
+      id: 3,
+      number: 3,
+      code: 'M003',
+      status: 'dispute',
+      photoCount: 2,
+      person: 'Carlos López',
+      date: '2025-01-15',
+      imageCode: 'IM778857',
+      votesInFavor: 25,
+      votesAgainst: 30,
+    },
+    {
+      id: 4,
+      number: 4,
+      code: 'M004',
+      status: 'unprocessed',
+      person: 'Ana Martínez',
+      date: '2025-01-15',
+      imageCode: 'IM778858',
+      votesInFavor: 15,
+      votesAgainst: 38,
+    },
   ];
-
-  const getCardStyle = (status: Mesa['status']) => {
-    const baseStyle = {
-      width: '100%',
-      maxWidth: '280px',
-      minWidth: '220px',
-      height: '180px',
-      borderRadius: '12px',
-      padding: '16px',
-      border: '1px solid #e5e7eb',
-      transition: 'all 0.3s ease',
-      display: 'flex',
-      flexDirection: 'column' as const,
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      textAlign: 'left' as const,
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      backgroundColor: '#ffffff',
-      color: '#374151',
-      position: 'relative' as const,
-      overflow: 'hidden',
-    };
-
-    if (status === 'unprocessed') {
-      return {
-        ...baseStyle,
-        opacity: 0.5,
-        backgroundColor: '#f9fafb',
-      };
-    }
-
-    return baseStyle;
-  };
-
-  const getStatusIndicatorStyle = (status: Mesa['status']) => {
-    const baseStyle = {
-      width: '8px',
-      height: '8px',
-      borderRadius: '50%',
-      display: 'inline-block',
-      marginRight: '8px',
-    };
-
-    switch (status) {
-      case 'processed':
-        return {
-          ...baseStyle,
-          backgroundColor: '#22c55e',
-        };
-      case 'dispute':
-        return {
-          ...baseStyle,
-          backgroundColor: '#ef4444',
-        };
-      case 'unprocessed':
-      default:
-        return {
-          ...baseStyle,
-          backgroundColor: '#6b7280',
-        };
-    }
-  };
-
-  const getStatusText = (status: Mesa['status']) => {
-    switch (status) {
-      case 'processed':
-        return 'Procesada';
-      case 'dispute':
-        return 'En Disputa';
-      case 'unprocessed':
-      default:
-        return 'Sin Procesar';
-    }
-  };
 
   const handleCardClick = (mesa: Mesa) => {
     if (mesa.status === 'unprocessed') {
@@ -101,111 +73,47 @@ const ImagesSection = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '16px',
-          maxWidth: '100%',
-        }}
-      >
-        {images.map((image) => (
-          <div
-            key={image.number}
-            style={getCardStyle(image.status)}
-            onClick={() => handleCardClick(image)}
-          >
+    <div className="p-5">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 max-w-full">
+        {images.map((mesa) => (
+          <div key={mesa.id} className="relative">
             <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                justifyContent: 'space-between',
-                overflow: 'hidden',
-              }}
+              className="rounded-lg overflow-hidden shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md"
+              onClick={() => handleCardClick(mesa)}
             >
-              <div style={{ flex: '1', minHeight: '0' }}>
-                <div
-                  style={{
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    marginBottom: '6px',
-                    lineHeight: '1.2',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  Mesa {image.number}
-                </div>
-                <div
-                  style={{
-                    fontSize: '13px',
-                    opacity: 0.6,
-                    marginBottom: '10px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {image.code}
-                </div>
+              {/* Background area with acta image */}
+              <div className="h-32 relative">
+                <img
+                  src={actaImage}
+                  alt="Acta Electoral"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-300/30 to-gray-400/30"></div>
               </div>
 
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                  flexShrink: 0,
-                }}
-              >
-                {image.photoCount !== undefined && (
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      color: '#6b7280',
-                      fontWeight: '500',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <span style={{ fontSize: '12px', flexShrink: 0 }}>📸</span>
-                    <span
-                      style={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {image.photoCount} foto{image.photoCount !== 1 ? 's' : ''}
+              {/* Content */}
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-800 text-sm mb-1">
+                  Código imagen
+                </h3>
+                <p className="text-gray-700 text-base mb-3 font-medium">
+                  {mesa.imageCode}
+                </p>
+
+                {/* Vote counts */}
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">A favor:</span>
+                    <span className="font-semibold text-gray-800">
+                      {mesa.votesInFavor}
                     </span>
                   </div>
-                )}
-
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    fontSize: '12px',
-                    fontWeight: '500',
-                    color: '#6b7280',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <div style={getStatusIndicatorStyle(image.status)}></div>
-                  <span
-                    style={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {getStatusText(image.status)}
-                  </span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">En contra:</span>
+                    <span className="font-semibold text-gray-800">
+                      {mesa.votesAgainst}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

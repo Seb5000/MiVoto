@@ -12,6 +12,8 @@ import {
   Table,
 } from 'lucide-react';
 import ModalImage from '../../components/ModalImage';
+import actaImage from '../../assets/acta.jpg';
+import LocationSection from './LocationSection';
 
 const combinedData = [
   { name: 'Party A', value: 100, color: '#FF6384' },
@@ -26,8 +28,7 @@ const combinedData = [
 
 const ballotData = {
   tableNumber: '25548',
-  imageUrl:
-    'https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=1xw:0.74975xh;0,0.190xh&resize=1200:*',
+  imageUrl: actaImage,
 };
 
 const ResultadosImagen = () => {
@@ -46,6 +47,18 @@ const ResultadosImagen = () => {
               Mesa #25548 &gt; Imagen #34566
             </h1>
             {/* <SearchBar className="ml-auto w-full" /> */}
+          </div>
+          <div className="bg-gray-50 rounded-lg shadow-sm p-4 mb-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">
+              Ubicacion
+            </h3>
+            <LocationSection
+              department="Cochabamba"
+              province="Esteban Arze"
+              municipality="Anzaldo"
+              electoralLocation="U.E. Arturo Sarmiento de Quiriria"
+              electoralSeat="Quiriria"
+            />
           </div>
           <div className="relative bg-white rounded-xl overflow-hidden shadow-md transition-transform duration-300 border border-gray-100 mb-8">
             {ballotData.imageUrl ? (
@@ -128,9 +141,7 @@ const ResultadosImagen = () => {
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">
-                        como correctos
-                      </p>
+                      <p className="text-sm text-gray-600 mb-1">A favor</p>
                       <p className="text-2xl font-bold text-gray-800">360</p>
                     </div>
                     <div className="bg-blue-100 p-3 rounded-full">
@@ -142,9 +153,7 @@ const ResultadosImagen = () => {
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">
-                        como incorrectos
-                      </p>
+                      <p className="text-sm text-gray-600 mb-1">En contra</p>
                       <p className="text-2xl font-bold text-gray-800">120</p>
                     </div>
                     <div className="bg-red-100 p-3 rounded-full">
