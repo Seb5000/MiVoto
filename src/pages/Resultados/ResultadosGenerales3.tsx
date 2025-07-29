@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import BarChart from '../../components/BarChart';
-import D3PieChart from '../../components/D3PieChart';
-import ResultsTable from '../../components/ResultsTable';
 import { useGetDepartmentsQuery } from '../../store/departments/departmentsEndpoints';
 import Breadcrumb2 from '../../components/Breadcrumb2';
 import { useSelector } from 'react-redux';
-import { Eye, FileText, Users, Table, BarChart3, PieChart } from 'lucide-react';
+import { Eye, FileText, Users } from 'lucide-react';
 import { selectFilters } from '../../store/resultados/resultadosSlice';
 import { useLazyGetResultsByLocationQuery } from '../../store/resultados/resultadosEndpoints';
+import Graphs from './Graphs';
+import Statistics from './Statistics';
+import StatisticsBars from './StatisticsBars';
 
 const combinedData = [
   { name: 'Party A', value: 100, color: '#FF6384' },
@@ -20,12 +20,59 @@ const combinedData = [
   { name: 'Party H', value: 110, color: '#36A2EB' },
 ];
 
+const menuOptions = [
+  {
+    id: 'estadisticas',
+    name: 'Estadisticas',
+    icon: {
+      component: FileText,
+      color: 'text-blue-600',
+      background: 'bg-blue-100',
+    },
+  },
+  {
+    id: 'participacion',
+    name: 'Participacion',
+    icon: {
+      component: Users,
+      color: 'text-green-600',
+      background: 'bg-green-100',
+    },
+  },
+  {
+    id: 'resultados_presidenciales',
+    name: 'Resultados presidenciales',
+    icon: {
+      component: Eye,
+      color: 'text-purple-600',
+      background: 'bg-purple-100',
+    },
+  },
+  {
+    id: 'resultados_diputados',
+    name: 'Resultados diputados',
+    icon: {
+      component: Eye,
+      color: 'text-purple-600',
+      background: 'bg-purple-100',
+    },
+  },
+];
+
 const ResultadosGenerales3 = () => {
   // const [resultsData, setResultsData] = useState([]);
-  const [presidentialData, setPresidentialData] = useState([]);
+  const [presidentialData, setPresidentialData] = useState<
+    Array<{ name: string; value: number; color: string }>
+  >([]);
+  const [deputiesData, setDeputiesData] = useState<
+    Array<{ name: string; value: number; color: string }>
+  >([]);
+  const [participation, setParticipation] = useState<
+    Array<{ name: string; value: any; color: string }>
+  >([]);
+  const [selectedOption, setSelectedOption] = useState(menuOptions[0]);
   useGetDepartmentsQuery({});
   const [getResultsByLocation] = useLazyGetResultsByLocationQuery({});
-  const [activeTab, setActiveTab] = useState('table');
   const filters = useSelector(selectFilters);
 
   useEffect(() => {
@@ -51,6 +98,41 @@ const ResultadosGenerales3 = () => {
             };
           });
           setPresidentialData(formattedData);
+
+          const participationData = [
+            {
+              name: 'Votos válidos',
+              value: data.summary.validVotes,
+              color: '#dbebda', // Green
+            },
+            {
+              name: 'Votos nulos',
+              value: data.summary.nullVotes,
+              color: '#dddddd', // Red
+            },
+            {
+              name: 'Votos en blanco',
+              value: data.summary.blankVotes,
+              color: '#f3f3ce', // Yellow
+            },
+          ];
+          setParticipation(participationData);
+        });
+      getResultsByLocation({ ...cleanedFilters, electionType: 'deputies' })
+        .unwrap()
+        .then((data) => {
+          console.log('Fetched deputies data:', data);
+          const formattedData = data.results.map((item: any) => {
+            // Generate random hex color if color not provided
+            const randomColor =
+              '#' + Math.floor(Math.random() * 16777215).toString(16);
+            return {
+              name: item.partyId,
+              value: item.totalVotes,
+              color: item.color || randomColor, // Use random color as fallback
+            };
+          });
+          setDeputiesData(formattedData);
         });
     }
   }, [filters]);
@@ -183,127 +265,79 @@ const ResultadosGenerales3 = () => {
             <Breadcrumb2 />
           </div>
           <div className="bg-gray-50 rounded-lg shadow-sm p-4 mb-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">
-              Estadísticas
+            <h3 className="text-xl font-bold text-gray-800 mb-4 pb-3 border-b border-gray-200">
+              Estadisticas Generales
             </h3>
+            <StatisticsBars />
           </div>
           <div className="w-full flex flex-wrap gap-4">
+            <div className="bg-gray-50 rounded-lg shadow-sm p-4 basis-[200px] grow-1 shrink-0">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 pb-3 border-b border-gray-200">
+                Opciones
+              </h3>
+
+              <div className="flex flex-wrap gap-4">
+                {menuOptions.map((option) => (
+                  <div
+                    key={option.name}
+                    onClick={() => setSelectedOption(option)}
+                    className={`bg-gray-50 rounded-lg p-4 border ${
+                      selectedOption.id === option.id
+                        ? 'border-blue-500 shadow-lg'
+                        : 'border-gray-200 hover:shadow-md'
+                    } transition-all duration-200 basis-[min(200px,100%)] grow-1`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p
+                          className={`text-lg ${
+                            selectedOption.id === option.id
+                              ? 'font-semibold'
+                              : ''
+                          } text-gray-800`}
+                        >
+                          {option.name}
+                        </p>
+                      </div>
+                      <div
+                        className={`${option.icon.background} p-3 rounded-full`}
+                      >
+                        <option.icon.component
+                          className={`w-4 h-4 ${option.icon.color}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* <div className="mt-6 pt-4 border-t border-gray-200">
+                <p className="text-xs text-gray-500 text-center">
+                  Última actualización: {new Date().toLocaleDateString('es-ES')}
+                </p>
+              </div> */}
+            </div>
             <div className="bg-gray-50 rounded-lg shadow-sm overflow-hidden basis-[min(420px,100%)] grow-3 shrink-0">
               {/* <div className="border-b border-gray-300 bg-gray-50 px-6 py-4">
                 <h2 className="text-xl font-semibold text-gray-600">
                   Visualización de Resultados{' '}
                 </h2>
               </div> */}
-              <div className="border-b border-gray-300 px-0 md:px-6 py-4">
-                <div className="mb-4 border-b border-gray-200 bg-gray-50">
-                  <div className="flex gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('table')}
-                      className={`pb-2 px-3 md:px-4 font-medium flex items-center gap-2 ${
-                        activeTab === 'table'
-                          ? 'border-b-2 border-blue-500 text-blue-600'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      <Table className="w-5 h-5 flex-shrink-0" />
-                      <span className="max-md:hidden">Tabla</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('bars')}
-                      className={`pb-2 px-3 md:px-4 font-medium flex items-center gap-2 ${
-                        activeTab === 'bars'
-                          ? 'border-b-2 border-blue-500 text-blue-600'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      <BarChart3 className="w-5 h-5 flex-shrink-0" />
-                      <span className="max-md:hidden">Gráfico de Barras</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('pie')}
-                      className={`pb-2 px-3 md:px-4 font-medium flex items-center gap-2 ${
-                        activeTab === 'pie'
-                          ? 'border-b-2 border-blue-500 text-blue-600'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      <PieChart className="w-5 h-5 flex-shrink-0" />
-                      <span className="max-md:hidden">Gráfico Circular</span>
-                    </button>
-                  </div>
-                </div>
-                {activeTab === 'table' && (
-                  <ResultsTable resultsData={presidentialData} />
+
+              <div className=" px-0 md:px-6 py-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-4 pb-3 border-b border-gray-200">
+                  {selectedOption.name}
+                </h3>
+                {selectedOption.id === 'estadisticas' && <Statistics />}
+                {selectedOption.id === 'participacion' && (
+                  <Graphs data={participation} />
                 )}
-                {activeTab === 'bars' && <BarChart data={presidentialData} />}
-                {activeTab === 'pie' && <D3PieChart data={presidentialData} />}
-              </div>
-            </div>
-            <div className="bg-gray-50 rounded-lg shadow-sm p-4 basis-[200px] grow-1 shrink-0">
-              <h3 className="text-xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">
-                Participacion
-              </h3>
-
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow basis-[min(200px,100%)] grow-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">
-                        Votos validos
-                      </p>
-                      <p className="text-2xl font-bold text-gray-800">360</p>
-                    </div>
-                    <div className="bg-blue-100 p-3 rounded-full">
-                      <FileText className="w-6 h-6 text-blue-600" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow basis-[min(200px,100%)] grow-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Votos nulos</p>
-                      <p className="text-2xl font-bold text-gray-800">120</p>
-                    </div>
-                    <div className="bg-green-100 p-3 rounded-full">
-                      <Users className="w-6 h-6 text-green-600" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow basis-[min(200px,100%)] grow-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">
-                        Votos en blanco
-                      </p>
-                      <p className="text-2xl font-bold text-gray-800">1,000</p>
-                    </div>
-                    <div className="bg-purple-100 p-3 rounded-full">
-                      <Eye className="w-6 h-6 text-purple-600" />
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow basis-[min(200px,100%)] grow-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Total</p>
-                      <p className="text-2xl font-bold text-gray-800">1,000</p>
-                    </div>
-                    <div className="bg-purple-100 p-3 rounded-full">
-                      <Eye className="w-6 h-6 text-purple-600" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <p className="text-xs text-gray-500 text-center">
-                  Última actualización: {new Date().toLocaleDateString('es-ES')}
-                </p>
+                {selectedOption.id === 'resultados_presidenciales' && (
+                  <Graphs data={presidentialData} />
+                )}
+                {selectedOption.id === 'resultados_diputados' && (
+                  <Graphs data={deputiesData} />
+                )}
               </div>
             </div>
           </div>
