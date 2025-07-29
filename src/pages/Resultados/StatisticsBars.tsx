@@ -68,7 +68,7 @@ const StatisticsBars = ({
             !!card.value && (
               <div
                 key={card.title}
-                className="w-64 min-w-0 flex-shrink bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+                className="min-w-0 flex-shrink bg-white rounded-lg p-4 border border-gray-200"
               >
                 <h3
                   className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate"

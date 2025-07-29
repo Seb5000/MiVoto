@@ -5,9 +5,9 @@ interface Mesa {
   photoCount?: number; // Number of photos of the electoral sheet
 }
 
-const TablesSection = () => {
+const ImagesSection = () => {
   // Sample data - you can replace this with your actual data source
-  const mesas: Mesa[] = [
+  const images: Mesa[] = [
     { number: 1, code: 'M001', status: 'processed', photoCount: 3 },
     { number: 2, code: 'M002', status: 'unprocessed' },
     { number: 3, code: 'M003', status: 'dispute', photoCount: 2 },
@@ -27,7 +27,6 @@ const TablesSection = () => {
       borderRadius: '12px',
       padding: '16px',
       border: '1px solid #e5e7eb',
-      cursor: 'pointer',
       transition: 'all 0.3s ease',
       display: 'flex',
       flexDirection: 'column' as const,
@@ -44,7 +43,6 @@ const TablesSection = () => {
     if (status === 'unprocessed') {
       return {
         ...baseStyle,
-        cursor: 'not-allowed',
         opacity: 0.5,
         backgroundColor: '#f9fafb',
       };
@@ -112,23 +110,11 @@ const TablesSection = () => {
           maxWidth: '100%',
         }}
       >
-        {mesas.map((mesa) => (
+        {images.map((image) => (
           <div
-            key={mesa.number}
-            style={getCardStyle(mesa.status)}
-            onClick={() => handleCardClick(mesa)}
-            onMouseEnter={(e) => {
-              if (mesa.status !== 'unprocessed') {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (mesa.status !== 'unprocessed') {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-              }
-            }}
+            key={image.number}
+            style={getCardStyle(image.status)}
+            onClick={() => handleCardClick(image)}
           >
             <div
               style={{
@@ -151,7 +137,7 @@ const TablesSection = () => {
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  Mesa {mesa.number}
+                  Mesa {image.number}
                 </div>
                 <div
                   style={{
@@ -163,7 +149,7 @@ const TablesSection = () => {
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {mesa.code}
+                  {image.code}
                 </div>
               </div>
 
@@ -175,7 +161,7 @@ const TablesSection = () => {
                   flexShrink: 0,
                 }}
               >
-                {mesa.photoCount !== undefined && (
+                {image.photoCount !== undefined && (
                   <div
                     style={{
                       fontSize: '12px',
@@ -195,7 +181,7 @@ const TablesSection = () => {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      {mesa.photoCount} foto{mesa.photoCount !== 1 ? 's' : ''}
+                      {image.photoCount} foto{image.photoCount !== 1 ? 's' : ''}
                     </span>
                   </div>
                 )}
@@ -210,7 +196,7 @@ const TablesSection = () => {
                     overflow: 'hidden',
                   }}
                 >
-                  <div style={getStatusIndicatorStyle(mesa.status)}></div>
+                  <div style={getStatusIndicatorStyle(image.status)}></div>
                   <span
                     style={{
                       overflow: 'hidden',
@@ -218,7 +204,7 @@ const TablesSection = () => {
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {getStatusText(mesa.status)}
+                    {getStatusText(image.status)}
                   </span>
                 </div>
               </div>
@@ -230,4 +216,4 @@ const TablesSection = () => {
   );
 };
 
-export default TablesSection;
+export default ImagesSection;
