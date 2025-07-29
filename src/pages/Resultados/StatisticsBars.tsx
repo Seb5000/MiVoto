@@ -16,17 +16,46 @@ const StatisticsBars = () => {
 
   const totalVotes = 1556;
 
+  // Cards data
+  const cardsData = [
+    { title: 'Número de mesas', value: 2678 },
+    { title: 'Votantes habilitados', value: 1234567 },
+    { title: 'Actas subidas', value: 1556 },
+    { title: 'Número de atestiguamientos', value: 4523 },
+  ];
+
   useEffect(() => {
     const timer = setTimeout(() => setAnimationComplete(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  const formatNumber = (num) => {
+  const formatNumber = (num: number) => {
     return num.toLocaleString('es-ES');
   };
   return (
     <div>
-      <div></div>
+      {/* cards section */}
+      <div className="flex flex-wrap gap-4 pb-4 overflow-hidden">
+        {cardsData.map((card) => (
+          <div
+            key={card.title}
+            className="w-64 min-w-0 flex-shrink bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+          >
+            <h3
+              className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate"
+              title={card.title}
+            >
+              {card.title}
+            </h3>
+            <p
+              className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate"
+              title={formatNumber(card.value)}
+            >
+              {formatNumber(card.value)}
+            </p>
+          </div>
+        ))}
+      </div>
       {/* Processing Progress */}
       <div className="mb-3">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
@@ -68,7 +97,7 @@ const StatisticsBars = () => {
           <div className="h-4 bg-slate-200 rounded-full overflow-hidden shadow-inner">
             {/* Container that shows full width */}
             <div
-              className="h-full flex transition-all duration-2000 ease-out"
+              className="h-full flex transition-all duration-500 ease-out"
               style={{
                 width: animationComplete ? '100%' : '0%',
               }}
@@ -82,7 +111,7 @@ const StatisticsBars = () => {
                     backgroundColor: item.color,
                     border: '1px solid rgba(0, 0, 0, 0.4)',
                     width: `${item.percentage}%`,
-                    transitionDelay: `${index * 300 + 500}ms`,
+                    transitionDelay: `${index * 200 + 400}ms`,
                   }}
                 ></div>
               ))}

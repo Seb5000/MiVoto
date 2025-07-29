@@ -6,7 +6,6 @@ import { Eye, FileText, Users } from 'lucide-react';
 import { selectFilters } from '../../store/resultados/resultadosSlice';
 import { useLazyGetResultsByLocationQuery } from '../../store/resultados/resultadosEndpoints';
 import Graphs from './Graphs';
-import Statistics from './Statistics';
 import StatisticsBars from './StatisticsBars';
 
 const combinedData = [
@@ -22,24 +21,6 @@ const combinedData = [
 
 const menuOptions = [
   {
-    id: 'estadisticas',
-    name: 'Estadisticas',
-    icon: {
-      component: FileText,
-      color: 'text-blue-600',
-      background: 'bg-blue-100',
-    },
-  },
-  {
-    id: 'participacion',
-    name: 'Participacion',
-    icon: {
-      component: Users,
-      color: 'text-green-600',
-      background: 'bg-green-100',
-    },
-  },
-  {
     id: 'resultados_presidenciales',
     name: 'Resultados presidenciales',
     icon: {
@@ -52,9 +33,18 @@ const menuOptions = [
     id: 'resultados_diputados',
     name: 'Resultados diputados',
     icon: {
-      component: Eye,
-      color: 'text-purple-600',
-      background: 'bg-purple-100',
+      component: Users,
+      color: 'text-green-600',
+      background: 'bg-green-100',
+    },
+  },
+  {
+    id: 'tables',
+    name: 'Mesas',
+    icon: {
+      component: FileText,
+      color: 'text-blue-600',
+      background: 'bg-blue-100',
     },
   },
 ];
@@ -283,7 +273,7 @@ const ResultadosGenerales3 = () => {
                     onClick={() => setSelectedOption(option)}
                     className={`bg-gray-50 rounded-lg p-4 border ${
                       selectedOption.id === option.id
-                        ? 'border-blue-500 shadow-lg'
+                        ? 'border-gray-500 shadow-lg'
                         : 'border-gray-200 hover:shadow-md'
                     } transition-all duration-200 basis-[min(200px,100%)] grow-1`}
                   >
@@ -328,10 +318,6 @@ const ResultadosGenerales3 = () => {
                 <h3 className="text-xl font-bold text-gray-800 mb-4 pb-3 border-b border-gray-200">
                   {selectedOption.name}
                 </h3>
-                {selectedOption.id === 'estadisticas' && <Statistics />}
-                {selectedOption.id === 'participacion' && (
-                  <Graphs data={participation} />
-                )}
                 {selectedOption.id === 'resultados_presidenciales' && (
                   <Graphs data={presidentialData} />
                 )}
