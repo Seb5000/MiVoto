@@ -7,6 +7,7 @@ import { selectFilters } from '../../store/resultados/resultadosSlice';
 import { useLazyGetResultsByLocationQuery } from '../../store/resultados/resultadosEndpoints';
 import Graphs from './Graphs';
 import StatisticsBars from './StatisticsBars';
+import TablesSection from './TablesSection';
 
 const combinedData = [
   { name: 'Party A', value: 100, color: '#FF6384' },
@@ -91,18 +92,18 @@ const ResultadosGenerales3 = () => {
 
           const participationData = [
             {
-              name: 'Votos válidos',
-              value: data.summary.validVotes,
-              color: '#dbebda', // Green
+              name: 'Válidos',
+              value: data.summary?.validVotes || 0,
+              color: '#8cc689', // Green
             },
             {
-              name: 'Votos nulos',
-              value: data.summary.nullVotes,
-              color: '#dddddd', // Red
+              name: 'Nulos',
+              value: data.summary?.nullVotes || 0,
+              color: '#81858e', // Red
             },
             {
-              name: 'Votos en blanco',
-              value: data.summary.blankVotes,
+              name: 'Blancos',
+              value: data.summary?.blankVotes || 0,
               color: '#f3f3ce', // Yellow
             },
           ];
@@ -258,7 +259,14 @@ const ResultadosGenerales3 = () => {
             <h3 className="text-xl font-bold text-gray-800 mb-4 pb-3 border-b border-gray-200">
               Estadisticas Generales
             </h3>
-            <StatisticsBars />
+            <StatisticsBars
+              voteData={participation}
+              processedTables={{ current: 1556, total: 2678 }}
+              totalTables={456}
+              totalVoters={1547}
+              totalActs={596}
+              totalWitnesses={500}
+            />
           </div>
           <div className="w-full flex flex-wrap gap-4">
             <div className="bg-gray-50 rounded-lg shadow-sm p-4 basis-[200px] grow-1 shrink-0">
@@ -324,6 +332,7 @@ const ResultadosGenerales3 = () => {
                 {selectedOption.id === 'resultados_diputados' && (
                   <Graphs data={deputiesData} />
                 )}
+                {selectedOption.id === 'tables' && <TablesSection />}
               </div>
             </div>
           </div>

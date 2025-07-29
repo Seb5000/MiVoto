@@ -1,27 +1,54 @@
 import { useEffect, useState } from 'react';
 
-const StatisticsBars = () => {
+interface VoteData {
+  name: string;
+  value: number;
+  color: string;
+}
+
+interface ProcessedTables {
+  current: number;
+  total: number;
+}
+
+interface StatisticsBarsProps {
+  voteData: VoteData[];
+  processedTables: ProcessedTables;
+  totalTables?: number; // Optional prop for total tables
+  totalVoters?: number; // Optional prop for total voters
+  totalActs?: number; // Optional prop for total acts
+  totalWitnesses?: number; // Optional prop for total witnesses
+}
+
+const StatisticsBars = ({
+  voteData = [],
+  processedTables = { current: 0, total: 0 },
+  totalTables = 0,
+  totalVoters = 0,
+  totalActs = 0,
+  totalWitnesses = 0,
+}: StatisticsBarsProps) => {
   const [animationComplete, setAnimationComplete] = useState(false);
 
   // Data from the image
-  const processedTables = { current: 1556, total: 2678 };
-  const progressPercentage = 92.3;
+  const progressPercentage = processedTables.total
+    ? ((processedTables.current / processedTables.total) * 100).toFixed(1)
+    : 0;
 
-  const voteData = [
-    { type: 'Válidos', percentage: 53.4, votes: 836, color: '#8cc689' },
-    { type: 'Nulos', percentage: 25.8, votes: 399, color: '#81858e' },
-    { type: 'Blancos', percentage: 20.8, votes: 321, color: '#f3f3ce' },
-    // { type: 'Blancos', percentage: 20.6, votes: 321, color: '#f2e9ad' },
-  ];
+  const totalVotes = voteData.reduce((sum, item) => sum + item.value, 0);
 
-  const totalVotes = 1556;
+  // Compute percentage for each vote type
+  const voteDataWithPercentage = voteData.map((item) => ({
+    ...item,
+    percentage: ((item.value / totalVotes) * 100).toFixed(1),
+  }));
 
   // Cards data
   const cardsData = [
-    { title: 'Número de mesas', value: 2678 },
-    { title: 'Votantes habilitados', value: 1234567 },
-    { title: 'Actas subidas', value: 1556 },
-    { title: 'Número de atestiguamientos', value: 4523 },
+    { title: 'Número de mesas', value: totalTables },
+    { title: 'Votantes habilitados', value: totalVoters },
+    { title: 'Actas subidas', value: totalActs },
+    { title: 'Número de atestiguamientos', value: totalWitnesses },
   ];
 
   useEffect(() => {
@@ -36,25 +63,28 @@ const StatisticsBars = () => {
     <div>
       {/* cards section */}
       <div className="flex flex-wrap gap-4 pb-4 overflow-hidden">
-        {cardsData.map((card) => (
-          <div
-            key={card.title}
-            className="w-64 min-w-0 flex-shrink bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
-          >
-            <h3
-              className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate"
-              title={card.title}
-            >
-              {card.title}
-            </h3>
-            <p
-              className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate"
-              title={formatNumber(card.value)}
-            >
-              {formatNumber(card.value)}
-            </p>
-          </div>
-        ))}
+        {cardsData.map(
+          (card) =>
+            !!card.value && (
+              <div
+                key={card.title}
+                className="w-64 min-w-0 flex-shrink bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+              >
+                <h3
+                  className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate"
+                  title={card.title}
+                >
+                  {card.title}
+                </h3>
+                <p
+                  className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate"
+                  title={formatNumber(card.value)}
+                >
+                  {formatNumber(card.value)}
+                </p>
+              </div>
+            )
+        )}
       </div>
       {/* Processing Progress */}
       <div className="mb-3">
@@ -103,9 +133,9 @@ const StatisticsBars = () => {
               }}
             >
               {/* Vote type sections within the full area */}
-              {voteData.map((item, index) => (
+              {voteDataWithPercentage.map((item, index) => (
                 <div
-                  key={item.type}
+                  key={item.name}
                   className="h-full transition-all duration-1500 ease-out first:rounded-l-full last:rounded-r-full"
                   style={{
                     backgroundColor: item.color,
@@ -121,8 +151,8 @@ const StatisticsBars = () => {
 
         {/* Vote Type Legend - Below Bar Chart */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mt-3">
-          {voteData.map((item) => (
-            <div key={item.type} className="flex items-center text-sm">
+          {voteDataWithPercentage.map((item) => (
+            <div key={item.name} className="flex items-center text-sm">
               <div
                 className="w-3 h-3 rounded-full mr-2 flex-shrink-0"
                 style={{
@@ -131,9 +161,9 @@ const StatisticsBars = () => {
                 }}
               ></div>
               <div className="min-w-0 flex-1">
-                <span className="font-medium text-slate-700">{item.type}</span>
+                <span className="font-medium text-slate-700">{item.name}</span>
                 <span className="text-slate-600 ml-1 whitespace-nowrap">
-                  {item.percentage}% ({formatNumber(item.votes)})
+                  {item.percentage}% ({formatNumber(item.value)})
                 </span>
               </div>
             </div>
