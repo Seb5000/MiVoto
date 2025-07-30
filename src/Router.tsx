@@ -11,6 +11,8 @@ import Departments from './pages/Departments/Departments';
 import DepartmentForm from './pages/Departments/DepartmentForm';
 import Provinces from './pages/Provinces/Provinces';
 import ProvincesForm from './pages/Provinces/ProvincesForm';
+import Municipalities from './pages/Municipalities/Municipalities';
+import MunicipalityForm from './pages/Municipalities/MunicipalityForm';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Login = React.lazy(() => import('./pages/Auth/Login'));
@@ -100,6 +102,13 @@ const AppRouter: React.FC = () => {
             <Route path="/provincias" element={<Provinces />} />
             <Route path="/provincias/nuevo" element={<ProvincesForm />} />
             <Route path="/provincias/editar/:id" element={<ProvincesForm />} />
+
+            <Route path="/municipios" element={<Municipalities />} />
+            <Route path="/municipios/nuevo" element={<MunicipalityForm />} />
+            <Route
+              path="/municipios/editar/:id"
+              element={<MunicipalityForm />}
+            />
             {/* </Route> */}
           </Route>
         </Routes>
