@@ -6,17 +6,21 @@ import {
   useGetProvinceQuery,
   useUpdateProvinceMutation,
 } from '../../store/provinces/provincesEndpoints';
+import { useLazyGetDepartmentsQuery } from '../../store/departments/departmentsEndpoints';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingButton from '../../components/LoadingButton';
 import Modal from '../../components/Modal';
 import BackButton from '../../components/BackButton';
 import { useState } from 'react';
+import { DepartmentType } from '../../types';
+import AsyncSelect from 'react-select/async';
 
 const ProvinceForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const isEditMode = Boolean(id);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [getDepartments] = useLazyGetDepartmentsQuery();
 
   const [createItem, { isLoading: isCreating, error: createError }] =
     useCreateProvinceMutation();
@@ -32,19 +36,26 @@ const ProvinceForm: React.FC = () => {
 
   const validationSchema = Yup.object({
     name: Yup.string().required('Este campo es obligatorio'),
+    departmentId: Yup.string().required('Debe seleccionar un departamento'),
   });
 
   const initialValues = {
     name: currentItem?.name || '',
     active: currentItem?.active ?? true,
+    departmentId: currentItem?.departmentId || '',
   };
 
-  const handleSubmit = async (values: { name: string; active: boolean }) => {
+  const handleSubmit = async (values: {
+    name: string;
+    active: boolean;
+    departmentId: string;
+  }) => {
     try {
       // Create payload without timestamp fields since the API doesn't expect them
       const payload = {
         name: values.name,
         active: values.active,
+        departmentId: values.departmentId,
       };
 
       if (isEditMode && id) {
@@ -56,6 +67,23 @@ const ProvinceForm: React.FC = () => {
       navigate('/provincias');
     } catch (err) {
       console.error('Failed to save province:', err);
+    }
+  };
+
+  const loadDepartments = async (inputValue: string) => {
+    try {
+      const { data } = await getDepartments({
+        search: inputValue,
+        limit: 10,
+      }).unwrap();
+
+      return data.map((item: DepartmentType) => ({
+        value: item._id,
+        label: item.name,
+      }));
+    } catch (error) {
+      console.error('Search failed:', error);
+      return [];
     }
   };
 
@@ -83,7 +111,7 @@ const ProvinceForm: React.FC = () => {
             onSubmit={handleSubmit}
             enableReinitialize
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, setFieldValue }) => (
               <Form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-6">
@@ -102,6 +130,34 @@ const ProvinceForm: React.FC = () => {
                       />
                       <ErrorMessage
                         name="name"
+                        component="div"
+                        className="text-orange-600 text-sm mt-1"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Departamento
+                      </label>
+                      <AsyncSelect
+                        name="departmentId"
+                        loadOptions={loadDepartments}
+                        defaultOptions={true}
+                        placeholder="Buscar..."
+                        isClearable
+                        onChange={(selectedOption) => {
+                          setFieldValue(
+                            'departmentId',
+                            selectedOption ? selectedOption.value : ''
+                          );
+                        }}
+                      />
+                      <ErrorMessage
+                        name="departmentId"
                         component="div"
                         className="text-orange-600 text-sm mt-1"
                       />
