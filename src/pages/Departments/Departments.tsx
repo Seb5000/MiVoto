@@ -82,15 +82,6 @@ const Departments: React.FC = () => {
       });
   };
 
-  const searchFields = [
-    {
-      key: 'search',
-      label: 'Nombre del Departamento',
-      placeholder: 'Buscar por nombre...',
-      type: 'input' as const,
-    },
-  ];
-
   const handleSearch = (values: Record<string, string>) => {
     setSearchParams(values);
     setCurrentPage(1); // Reset to first page when searching
@@ -127,7 +118,7 @@ const Departments: React.FC = () => {
           >
             <Table.Header>
               <div className="mb-4">
-                <SearchForm fields={searchFields} onSearch={handleSearch} />
+                <SearchForm onSearch={handleSearch} />
               </div>
             </Table.Header>
             <Table.Footer>
