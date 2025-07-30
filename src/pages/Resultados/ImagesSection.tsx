@@ -1,11 +1,11 @@
+import { Link } from 'react-router-dom';
 import actaImage from '../../assets/acta.jpg';
 
-interface Mesa {
+interface Image {
   id: number;
   number: number;
   code: string;
   status: 'unprocessed' | 'processed' | 'dispute';
-  photoCount?: number; // Number of photos of the electoral sheet
   person: string;
   date: string;
   imageCode: string;
@@ -15,13 +15,12 @@ interface Mesa {
 
 const ImagesSection = () => {
   // Sample data - you can replace this with your actual data source
-  const images: Mesa[] = [
+  const images: Image[] = [
     {
       id: 1,
       number: 1,
       code: 'M001',
       status: 'processed',
-      photoCount: 3,
       person: 'Juan Pérez',
       date: '2025-01-15',
       imageCode: 'IM778855',
@@ -44,7 +43,6 @@ const ImagesSection = () => {
       number: 3,
       code: 'M003',
       status: 'dispute',
-      photoCount: 2,
       person: 'Carlos López',
       date: '2025-01-15',
       imageCode: 'IM778857',
@@ -64,7 +62,7 @@ const ImagesSection = () => {
     },
   ];
 
-  const handleCardClick = (mesa: Mesa) => {
+  const handleCardClick = (mesa: Image) => {
     if (mesa.status === 'unprocessed') {
       return; // Do nothing for unprocessed mesas
     }
@@ -75,49 +73,51 @@ const ImagesSection = () => {
   return (
     <div className="p-5">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 max-w-full">
-        {images.map((mesa) => (
-          <div key={mesa.id} className="relative">
-            <div
-              className="rounded-lg overflow-hidden shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md"
-              onClick={() => handleCardClick(mesa)}
-            >
-              {/* Background area with acta image */}
-              <div className="h-32 relative">
-                <img
-                  src={actaImage}
-                  alt="Acta Electoral"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-300/30 to-gray-400/30"></div>
-              </div>
+        {images.map((image) => (
+          <Link to={`/resultados/imagen/${image.id}`} key={image.id}>
+            <div className="relative">
+              <div
+                className="rounded-lg overflow-hidden shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md"
+                onClick={() => handleCardClick(image)}
+              >
+                {/* Background area with acta image */}
+                <div className="h-32 relative">
+                  <img
+                    src={actaImage}
+                    alt="Acta Electoral"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-300/30 to-gray-400/30"></div>
+                </div>
 
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-800 text-sm mb-1">
-                  Código imagen
-                </h3>
-                <p className="text-gray-700 text-base mb-3 font-medium">
-                  {mesa.imageCode}
-                </p>
+                {/* Content */}
+                <div className="p-4">
+                  <h3 className="font-semibold text-gray-800 text-sm mb-1">
+                    Código imagen
+                  </h3>
+                  <p className="text-gray-700 text-base mb-3 font-medium">
+                    {image.imageCode}
+                  </p>
 
-                {/* Vote counts */}
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">A favor:</span>
-                    <span className="font-semibold text-gray-800">
-                      {mesa.votesInFavor}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">En contra:</span>
-                    <span className="font-semibold text-gray-800">
-                      {mesa.votesAgainst}
-                    </span>
+                  {/* Vote counts */}
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">A favor:</span>
+                      <span className="font-semibold text-gray-800">
+                        {image.votesInFavor}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">En contra:</span>
+                      <span className="font-semibold text-gray-800">
+                        {image.votesAgainst}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

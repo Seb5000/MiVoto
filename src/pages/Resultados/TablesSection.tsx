@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 interface Mesa {
   number: number;
   code: string;
@@ -6,16 +8,18 @@ interface Mesa {
 }
 
 const TablesSection = () => {
+  const navigate = useNavigate();
+
   // Sample data - you can replace this with your actual data source
   const mesas: Mesa[] = [
-    { number: 1, code: 'M001', status: 'processed', photoCount: 3 },
-    { number: 2, code: 'M002', status: 'unprocessed' },
-    { number: 3, code: 'M003', status: 'dispute', photoCount: 2 },
-    { number: 4, code: 'M004', status: 'unprocessed' },
-    { number: 5, code: 'M005', status: 'processed', photoCount: 4 },
-    { number: 6, code: 'M006', status: 'unprocessed' },
-    { number: 7, code: 'M007', status: 'dispute', photoCount: 1 },
-    { number: 8, code: 'M008', status: 'unprocessed' },
+    { number: 1, code: 'ERETTF', status: 'processed', photoCount: 3 },
+    { number: 2, code: 'FDHJYHY', status: 'unprocessed' },
+    { number: 3, code: 'DDFGG', status: 'dispute', photoCount: 2 },
+    { number: 4, code: 'YRTY', status: 'unprocessed' },
+    { number: 5, code: 'TYUUII', status: 'processed', photoCount: 4 },
+    { number: 6, code: 'FGJ', status: 'unprocessed' },
+    { number: 7, code: 'MUJUJT', status: 'dispute', photoCount: 1 },
+    { number: 8, code: 'ERTERT', status: 'unprocessed' },
   ];
 
   const getCardStyle = (status: Mesa['status']) => {
@@ -27,7 +31,6 @@ const TablesSection = () => {
       borderRadius: '12px',
       padding: '16px',
       border: '1px solid #e5e7eb',
-      cursor: 'pointer',
       transition: 'all 0.3s ease',
       display: 'flex',
       flexDirection: 'column' as const,
@@ -44,7 +47,6 @@ const TablesSection = () => {
     if (status === 'unprocessed') {
       return {
         ...baseStyle,
-        cursor: 'not-allowed',
         opacity: 0.5,
         backgroundColor: '#f9fafb',
       };
@@ -98,8 +100,8 @@ const TablesSection = () => {
     if (mesa.status === 'unprocessed') {
       return; // Do nothing for unprocessed mesas
     }
-    // Add your click handler logic here
-    console.log(`Clicked on mesa ${mesa.number} - ${mesa.code}`);
+    // Navigate to the mesa details page with the mesa number as ID
+    navigate(`/resultados/mesa/${mesa.code}`);
   };
 
   return (
@@ -117,18 +119,6 @@ const TablesSection = () => {
             key={mesa.number}
             style={getCardStyle(mesa.status)}
             onClick={() => handleCardClick(mesa)}
-            onMouseEnter={(e) => {
-              if (mesa.status !== 'unprocessed') {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (mesa.status !== 'unprocessed') {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-              }
-            }}
           >
             <div
               style={{

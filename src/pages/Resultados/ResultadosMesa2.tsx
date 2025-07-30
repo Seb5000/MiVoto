@@ -16,6 +16,7 @@ import {
 import LocationSection from './LocationSection';
 import Graphs from './Graphs';
 import ImagesSection from './ImagesSection';
+import { useParams } from 'react-router-dom';
 
 const combinedData = [
   { name: 'Party A', value: 100, color: '#FF6384' },
@@ -59,6 +60,7 @@ const menuOptions = [
 ];
 
 const ResultadosMesa2 = () => {
+  const { id } = useParams();
   const [activeTab, setActiveTab] = useState('bars');
   const [selectedOption, setSelectedOption] = useState(menuOptions[0]);
 
@@ -71,7 +73,7 @@ const ResultadosMesa2 = () => {
         <div className="bg-white rounded-xl shadow-lg py-6 px-6">
           <div className="flex items-center mb-4 flex-wrap">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-600">
-              Mesa #25548
+              {id ? `Mesa #${id}` : 'Mesa #25548'}
             </h1>
             <SearchBar className="shrink-1 ml-auto" />
           </div>

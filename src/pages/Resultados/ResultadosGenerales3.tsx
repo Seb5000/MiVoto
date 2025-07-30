@@ -20,6 +20,17 @@ const combinedData = [
   { name: 'Party H', value: 110, color: '#36A2EB' },
 ];
 
+const combinedData2 = [
+  { name: 'Party A', value: 54, color: '#FF6384' },
+  { name: 'Party B', value: 36, color: '#36A2EB' },
+  { name: 'Party C', value: 55, color: '#FFCE56' },
+  { name: 'Party D', value: 22, color: '#4BC0C0' },
+  { name: 'Party E', value: 45, color: '#9966FF' },
+  { name: 'Party F', value: 66, color: '#FF9F40' },
+  { name: 'Party G', value: 12, color: '#FF6384' },
+  { name: 'Party H', value: 55, color: '#36A2EB' },
+];
+
 const menuOptions = [
   {
     id: 'resultados_presidenciales',
@@ -93,17 +104,20 @@ const ResultadosGenerales3 = () => {
           const participationData = [
             {
               name: 'Válidos',
-              value: data.summary?.validVotes || 0,
+              // value: data.summary?.validVotes || 0,
+              value: 80,
               color: '#8cc689', // Green
             },
             {
               name: 'Nulos',
-              value: data.summary?.nullVotes || 0,
+              // value: data.summary?.nullVotes || 0,
+              value: 24,
               color: '#81858e', // Red
             },
             {
               name: 'Blancos',
-              value: data.summary?.blankVotes || 0,
+              // value: data.summary?.blankVotes || 0,
+              value: 15,
               color: '#f3f3ce', // Yellow
             },
           ];
@@ -327,9 +341,11 @@ const ResultadosGenerales3 = () => {
                   {selectedOption.name}
                 </h3>
                 {selectedOption.id === 'resultados_presidenciales' && (
+                  // <Graphs data={presidentialData} />
                   <Graphs data={presidentialData} />
                 )}
                 {selectedOption.id === 'resultados_diputados' && (
+                  // <Graphs data={deputiesData} />
                   <Graphs data={deputiesData} />
                 )}
                 {selectedOption.id === 'tables' && <TablesSection />}
