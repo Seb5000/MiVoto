@@ -102,21 +102,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
             </li>
           </ul>
         </div>
-        {/* <div className={styles.section}>
-          <h3 className={styles.title}>Actas</h3>
+        <div className={styles.section}>
+          <h3 className={styles.title}>Ubicaciones geográficas</h3>
           <ul className={styles.menu}>
+            {' '}
             <li className={styles.menuItem}>
-              <Link to="/enviarActa" className={styles.menuLink}>
-                <span className={styles.icon}>📚</span>Subir acta
+              <Link to="/departamentos" className={styles.menuLink}>
+                <span className={styles.icon}>⚙️</span>Departamentos
               </Link>
             </li>
             <li className={styles.menuItem}>
-              <Link to="/verActa" className={styles.menuLink}>
-                <span className={styles.icon}>💬</span>Ver acta
+              <Link to="/provincias" className={styles.menuLink}>
+                <span className={styles.icon}>🏛️</span>Provincias
+              </Link>
+            </li>
+            <li className={styles.menuItem}>
+              <Link to="/municipios" className={styles.menuLink}>
+                <span className={styles.icon}>🏫</span>Municipios
+              </Link>
+            </li>
+            <li className={styles.menuItem}>
+              <Link to="/actas" className={styles.menuLink}>
+                <span className={styles.icon}>📋</span>Actas
               </Link>
             </li>
           </ul>
-        </div> */}
+        </div>
       </aside>
       {isSmallScreen && (
         <div

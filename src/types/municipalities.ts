@@ -1,5 +1,6 @@
 // Base interface for creating a municipality (without server-generated fields)
 export interface CreateMunicipalityType {
+  // departmentId: string;
   provinceId: string;
   name: string;
   active: boolean;
@@ -7,6 +8,7 @@ export interface CreateMunicipalityType {
 
 // Interface for updating a municipality (partial fields, excluding server-generated ones)
 export interface UpdateMunicipalityType {
+  // departmentId?: string;
   provinceId?: string;
   name?: string;
   active?: boolean;
