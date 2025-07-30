@@ -1,58 +1,58 @@
-import React, { useState } from "react";
-import Table from "../../components/Table";
-import Modal from "../../components/Modal";
-import Pagination from "../../components/Pagination";
-import SearchForm from "../../components/SearchForm";
-import { Link, useNavigate } from "react-router-dom";
-import type { ColumnDef } from "@tanstack/react-table";
+import React, { useState } from 'react';
+import Table from '../../components/Table';
+import Modal from '../../components/Modal';
+import Pagination from '../../components/Pagination';
+import SearchForm from '../../components/SearchForm';
+import { Link, useNavigate } from 'react-router-dom';
+import type { ColumnDef } from '@tanstack/react-table';
 import {
   useGetRecintosQuery,
   useDeleteRecintoMutation,
   useGetDepartmentsQuery,
   useLazyGetProvincesQuery,
   useLazyGetMunicipalitiesQuery,
-} from "../../store/recintos/recintosEndpoints";
-import { RecintoElectoral } from "../../types/recintos";
-import BackButton from "../../components/BackButton";
+} from '../../store/recintos/recintosEndpoints';
+import { RecintoElectoral } from '../../types/recintos';
+import BackButton from '../../components/BackButton';
 
 const columns: ColumnDef<RecintoElectoral>[] = [
   {
-    accessorKey: "code",
-    header: "Código",
+    accessorKey: 'code',
+    header: 'Código',
   },
   {
-    accessorKey: "name",
-    header: "Nombre",
+    accessorKey: 'name',
+    header: 'Nombre',
   },
   {
-    accessorKey: "department",
-    header: "Departamento",
+    accessorKey: 'department',
+    header: 'Departamento',
   },
   {
-    accessorKey: "province",
-    header: "Provincia",
+    accessorKey: 'province',
+    header: 'Provincia',
   },
   {
-    accessorKey: "municipality",
-    header: "Municipio",
+    accessorKey: 'municipality',
+    header: 'Municipio',
   },
 
   {
-    accessorKey: "totalTables",
-    header: "Total Mesas",
+    accessorKey: 'totalTables',
+    header: 'Total Mesas',
   },
   {
-    id: "status",
-    header: "Estado",
+    id: 'status',
+    header: 'Estado',
     cell: ({ row }) => (
       <span
         className={`px-2 py-1 rounded-full text-sm ${
           row.original.active
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
+            ? 'bg-green-100 text-green-800'
+            : 'bg-red-100 text-red-800'
         }`}
       >
-        {row.original.active ? "Activo" : "Inactivo"}
+        {row.original.active ? 'Activo' : 'Inactivo'}
       </span>
     ),
   },
@@ -62,8 +62,8 @@ const RecintosElectorales: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [provinces, setProvinces] = useState<string[]>([]);
   const [municipalities, setMunicipalities] = useState<string[]>([]);
-  const [selectedDepartment, setSelectedDepartment] = useState<string>("");
-  const [selectedProvince, setSelectedProvince] = useState<string>("");
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('');
+  const [selectedProvince, setSelectedProvince] = useState<string>('');
   const [searchParams, setSearchParams] = useState<Record<string, string>>({});
   const limit = 10;
   const { data } = useGetRecintosQuery({
@@ -95,12 +95,12 @@ const RecintosElectorales: React.FC = () => {
     deleteItem(recintoToDelete._id)
       .unwrap()
       .then(() => {
-        console.log("Recinto deleted successfully");
+        console.log('Recinto deleted successfully');
         setIsDeleteModalOpen(false);
         setRecintoToDelete(null);
       })
       .catch((error) => {
-        console.error("Failed to delete recinto:", error);
+        console.error('Failed to delete recinto:', error);
       });
   };
 
@@ -111,25 +111,25 @@ const RecintosElectorales: React.FC = () => {
     //   placeholder: "Buscar por nombre...",
     //   type: "input" as const,
     // },
-    {
-      key: "department",
-      label: "Departamento",
-      type: "select" as const,
-      options: departments?.map((dept) => ({ value: dept, label: dept })) || [],
-    },
-    {
-      key: "province",
-      label: "Provincia",
-      type: "select" as const,
-      options: provinces.map((prov) => ({ value: prov, label: prov })) || [],
-    },
-    {
-      key: "municipality",
-      label: "Municipio",
-      type: "select" as const,
-      options:
-        municipalities.map((muni) => ({ value: muni, label: muni })) || [],
-    },
+    // {
+    //   key: 'department',
+    //   label: 'Departamento',
+    //   type: 'select' as const,
+    //   options: departments?.map((dept) => ({ value: dept, label: dept })) || [],
+    // },
+    // {
+    //   key: 'province',
+    //   label: 'Provincia',
+    //   type: 'select' as const,
+    //   options: provinces.map((prov) => ({ value: prov, label: prov })) || [],
+    // },
+    // {
+    //   key: 'municipality',
+    //   label: 'Municipio',
+    //   type: 'select' as const,
+    //   options:
+    //     municipalities.map((muni) => ({ value: muni, label: muni })) || [],
+    // },
   ];
 
   const handleSearch = (values: Record<string, string>) => {
@@ -139,28 +139,28 @@ const RecintosElectorales: React.FC = () => {
 
   const handleSelectChange = (key: string, value: string) => {
     console.log(`Select ${key} changed to:`, value);
-    if (key === "department") {
+    if (key === 'department') {
       setSelectedDepartment(value);
       if (value) {
         getProvinces(value).then((result) => {
           setProvinces(result.data || []);
-          console.log("Provinces:", result.data);
+          console.log('Provinces:', result.data);
         });
         // Reset province when department changes
-        setSelectedProvince("");
+        setSelectedProvince('');
       }
-    } else if (key === "province") {
+    } else if (key === 'province') {
       setSelectedProvince(value);
     }
 
     // Fetch municipalities if we have both department and province
-    if ((key === "department" || key === "province") && selectedDepartment) {
-      const province = key === "province" ? value : selectedProvince;
+    if ((key === 'department' || key === 'province') && selectedDepartment) {
+      const province = key === 'province' ? value : selectedProvince;
       if (province) {
         getMunicipalities({ department: selectedDepartment, province }).then(
           (result) => {
             setMunicipalities(result.data || []);
-            console.log("Municipalities:", result.data);
+            console.log('Municipalities:', result.data);
           }
         );
       }
@@ -170,7 +170,7 @@ const RecintosElectorales: React.FC = () => {
   // Log departments whenever they change
   React.useEffect(() => {
     if (departments) {
-      console.log("Departments:", departments);
+      console.log('Departments:', departments);
     }
   }, [departments]);
 

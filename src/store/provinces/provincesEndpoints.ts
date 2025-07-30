@@ -39,6 +39,32 @@ export const provincesApiSlice = apiSlice.injectEndpoints({
         { type: 'Provinces' as const, id },
       ],
     }),
+    createProvince: builder.mutation<ProvincesType, Partial<ProvincesType>>({
+      query: (body) => ({
+        url: '/geographic/provinces',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Provinces', id: 'LIST' }],
+    }),
+    updateProvince: builder.mutation<
+      ProvincesType,
+      { id: string; item: Partial<ProvincesType> }
+    >({
+      query: ({ id, item }) => ({
+        url: `/geographic/provinces/${id}`,
+        method: 'PATCH',
+        body: item,
+      }),
+      invalidatesTags: [{ type: 'Provinces', id: 'LIST' }],
+    }),
+    deleteProvince: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/geographic/provinces/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Provinces', id: 'LIST' }],
+    }),
   }),
 });
 
@@ -49,4 +75,7 @@ export const {
   useLazyGetProvincesByDepartmentIdQuery,
   useGetProvinceQuery,
   useLazyGetProvinceQuery,
+  useCreateProvinceMutation,
+  useUpdateProvinceMutation,
+  useDeleteProvinceMutation,
 } = provincesApiSlice;

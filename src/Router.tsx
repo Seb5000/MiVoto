@@ -7,6 +7,10 @@ import { useLazyGetProfileQuery } from './store/auth/authEndpoints';
 import ResultadosGenerales3 from './pages/Resultados/ResultadosGenerales3';
 import ResultadosMesa2 from './pages/Resultados/ResultadosMesa2';
 import ResultadosImagen from './pages/Resultados/ResultadosImagen';
+import Departments from './pages/Departments/Departments';
+import DepartmentForm from './pages/Departments/DepartmentForm';
+import Provinces from './pages/Provinces/Provinces';
+import ProvincesForm from './pages/Provinces/ProvincesForm';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Login = React.lazy(() => import('./pages/Auth/Login'));
@@ -30,31 +34,31 @@ const AppRouter: React.FC = () => {
   const [getProfile] = useLazyGetProfileQuery();
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') ?? 'null');
-    const token = localStorage.getItem('token');
-    if (user && token) {
-      dispatch(setAuth({ access_token: token, user }));
-      console.log('User data:', user);
-      getProfile()
-        .unwrap()
-        .then((res) => {
-          console.log('Profile data:', res);
-        })
-        .catch((err) => {
-          if (err.status === 401) {
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
-            dispatch(logOut());
-          }
-        });
-    }
-    setIsAuthLoading(false);
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const user = JSON.parse(localStorage.getItem('user') ?? 'null');
+  //   const token = localStorage.getItem('token');
+  //   if (user && token) {
+  //     dispatch(setAuth({ access_token: token, user }));
+  //     console.log('User data:', user);
+  //     getProfile()
+  //       .unwrap()
+  //       .then((res) => {
+  //         console.log('Profile data:', res);
+  //       })
+  //       .catch((err) => {
+  //         if (err.status === 401) {
+  //           localStorage.removeItem('user');
+  //           localStorage.removeItem('token');
+  //           dispatch(logOut());
+  //         }
+  //       });
+  //   }
+  //   setIsAuthLoading(false);
+  // }, [dispatch]);
 
-  if (isAuthLoading) {
-    return <LoadingSkeleton />;
-  }
+  // if (isAuthLoading) {
+  //   return <LoadingSkeleton />;
+  // }
 
   return (
     <Router>
@@ -74,19 +78,29 @@ const AppRouter: React.FC = () => {
               path="/resultados/imagen/:id"
               element={<ResultadosImagen />}
             />
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/panel" element={<PanelControl />} />
-              <Route path="/partidos" element={<Partidos />} />
-              <Route path="/partidos/nuevo" element={<PartidoForm />} />
-              <Route path="/partidos/editar/:id" element={<PartidoForm />} />
-              <Route path="/recintos" element={<RecintosElectorales />} />
-              <Route path="/recintos/nuevo" element={<RecintoForm />} />
-              <Route path="/recintos/editar/:id" element={<RecintoForm />} />
+            {/* <Route element={<ProtectedRoutes />}> */}
+            <Route path="/panel" element={<PanelControl />} />
+            <Route path="/partidos" element={<Partidos />} />
+            <Route path="/partidos/nuevo" element={<PartidoForm />} />
+            <Route path="/partidos/editar/:id" element={<PartidoForm />} />
+            <Route path="/recintos" element={<RecintosElectorales />} />
+            <Route path="/recintos/nuevo" element={<RecintoForm />} />
+            <Route path="/recintos/editar/:id" element={<RecintoForm />} />
 
-              <Route path="/actas" element={<Actas />} />
-              <Route path="/actas/nuevo" element={<ActasForm />} />
-              <Route path="/actas/editar/:id" element={<ActasForm />} />
-            </Route>
+            <Route path="/actas" element={<Actas />} />
+            <Route path="/actas/nuevo" element={<ActasForm />} />
+            <Route path="/actas/editar/:id" element={<ActasForm />} />
+
+            <Route path="/departamentos" element={<Departments />} />
+            <Route path="/departamentos/nuevo" element={<DepartmentForm />} />
+            <Route
+              path="/departamentos/editar/:id"
+              element={<DepartmentForm />}
+            />
+            <Route path="/provincias" element={<Provinces />} />
+            <Route path="/provincias/nuevo" element={<ProvincesForm />} />
+            <Route path="/provincias/editar/:id" element={<ProvincesForm />} />
+            {/* </Route> */}
           </Route>
         </Routes>
       </React.Suspense>
