@@ -1,5 +1,10 @@
 import { apiSlice } from '../apiSlice';
-import { PaginatedResponse, ProvincesType } from '../../types';
+import {
+  PaginatedResponse,
+  ProvincesType,
+  CreateProvinceType,
+  UpdateProvinceType,
+} from '../../types';
 
 interface QueryProvincesParams {
   page?: number;
@@ -39,7 +44,7 @@ export const provincesApiSlice = apiSlice.injectEndpoints({
         { type: 'Provinces' as const, id },
       ],
     }),
-    createProvince: builder.mutation<ProvincesType, Partial<ProvincesType>>({
+    createProvince: builder.mutation<ProvincesType, CreateProvinceType>({
       query: (body) => ({
         url: '/geographic/provinces',
         method: 'POST',
@@ -49,14 +54,17 @@ export const provincesApiSlice = apiSlice.injectEndpoints({
     }),
     updateProvince: builder.mutation<
       ProvincesType,
-      { id: string; item: Partial<ProvincesType> }
+      { id: string; item: UpdateProvinceType }
     >({
       query: ({ id, item }) => ({
         url: `/geographic/provinces/${id}`,
         method: 'PATCH',
         body: item,
       }),
-      invalidatesTags: [{ type: 'Provinces', id: 'LIST' }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Provinces', id: 'LIST' },
+        { type: 'Provinces', id },
+      ],
     }),
     deleteProvince: builder.mutation<void, string>({
       query: (id) => ({

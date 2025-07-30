@@ -11,8 +11,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import LoadingButton from '../../components/LoadingButton';
 import Modal from '../../components/Modal';
 import BackButton from '../../components/BackButton';
-import { useState } from 'react';
-import { DepartmentType } from '../../types';
+import { useState, useEffect } from 'react';
+import {
+  DepartmentType,
+  CreateProvinceType,
+  UpdateProvinceType,
+} from '../../types';
 import AsyncSelect from 'react-select/async';
 
 const ProvinceForm: React.FC = () => {
@@ -20,6 +24,10 @@ const ProvinceForm: React.FC = () => {
   const isEditMode = Boolean(id);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
   const [getDepartments] = useLazyGetDepartmentsQuery();
 
   const [createItem, { isLoading: isCreating, error: createError }] =
@@ -34,6 +42,19 @@ const ProvinceForm: React.FC = () => {
   const error = createError || updateError;
   const isLoading = isCreating || isUpdating || isLoadingitem;
 
+  // Initialize selected department when currentItem loads
+  useEffect(() => {
+    if (
+      currentItem?.departmentId &&
+      typeof currentItem.departmentId === 'object'
+    ) {
+      setSelectedDepartment({
+        value: currentItem.departmentId._id,
+        label: currentItem.departmentId.name,
+      });
+    }
+  }, [currentItem]);
+
   const validationSchema = Yup.object({
     name: Yup.string().required('Este campo es obligatorio'),
     departmentId: Yup.string().required('Debe seleccionar un departamento'),
@@ -42,7 +63,10 @@ const ProvinceForm: React.FC = () => {
   const initialValues = {
     name: currentItem?.name || '',
     active: currentItem?.active ?? true,
-    departmentId: currentItem?.departmentId || '',
+    departmentId:
+      typeof currentItem?.departmentId === 'object'
+        ? currentItem?.departmentId._id
+        : currentItem?.departmentId || '',
   };
 
   const handleSubmit = async (values: {
@@ -51,17 +75,22 @@ const ProvinceForm: React.FC = () => {
     departmentId: string;
   }) => {
     try {
-      // Create payload without timestamp fields since the API doesn't expect them
-      const payload = {
-        name: values.name,
-        active: values.active,
-        departmentId: values.departmentId,
-      };
-
       if (isEditMode && id) {
-        await updateItem({ id, item: payload }).unwrap();
+        // For updates, only send the fields that can be updated
+        const updatePayload: UpdateProvinceType = {
+          name: values.name,
+          active: values.active,
+          departmentId: values.departmentId,
+        };
+        await updateItem({ id, item: updatePayload }).unwrap();
       } else {
-        await createItem(payload as any).unwrap();
+        // For creation, send all required fields
+        const createPayload: CreateProvinceType = {
+          name: values.name,
+          active: values.active,
+          departmentId: values.departmentId,
+        };
+        await createItem(createPayload).unwrap();
       }
       setIsModalOpen(true);
       navigate('/provincias');
@@ -111,7 +140,7 @@ const ProvinceForm: React.FC = () => {
             onSubmit={handleSubmit}
             enableReinitialize
           >
-            {({ isSubmitting, setFieldValue }) => (
+            {({ isSubmitting, setFieldValue }: any) => (
               <Form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-6">
@@ -149,7 +178,9 @@ const ProvinceForm: React.FC = () => {
                         defaultOptions={true}
                         placeholder="Buscar..."
                         isClearable
+                        value={selectedDepartment}
                         onChange={(selectedOption) => {
+                          setSelectedDepartment(selectedOption);
                           setFieldValue(
                             'departmentId',
                             selectedOption ? selectedOption.value : ''

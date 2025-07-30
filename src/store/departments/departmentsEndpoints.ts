@@ -1,5 +1,10 @@
 import { apiSlice } from '../apiSlice';
-import { PaginatedResponse, DepartmentType } from '../../types';
+import {
+  PaginatedResponse,
+  DepartmentType,
+  CreateDepartmentType,
+  UpdateDepartmentType,
+} from '../../types';
 import { setDepartments } from './departmentsSlice';
 
 interface QueryDepartmentsParams {
@@ -42,34 +47,37 @@ export const departmentsApiSlice = apiSlice.injectEndpoints({
         { type: 'Departments' as const, id },
       ],
     }),
-    createDepartment: builder.mutation<
-      DepartmentType,
-      Omit<DepartmentType, '_id'>
-    >({
+    createDepartment: builder.mutation<DepartmentType, CreateDepartmentType>({
       query: (item) => ({
         url: '/geographic/departments',
         method: 'POST',
         body: item,
       }),
-      invalidatesTags: ['Departments'],
+      invalidatesTags: [{ type: 'Departments', id: 'LIST' }],
     }),
     updateDepartment: builder.mutation<
       DepartmentType,
-      { id: string; item: Partial<DepartmentType> }
+      { id: string; item: UpdateDepartmentType }
     >({
       query: ({ id, item }) => ({
         url: `/geographic/departments/${id}`,
         method: 'PATCH',
         body: item,
       }),
-      invalidatesTags: ['Departments'],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Departments', id: 'LIST' },
+        { type: 'Departments', id },
+      ],
     }),
     deleteDepartment: builder.mutation<void, string>({
       query: (id) => ({
         url: `/geographic/departments/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Departments'],
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'Departments', id: 'LIST' },
+        { type: 'Departments', id },
+      ],
     }),
   }),
 });

@@ -119,7 +119,7 @@ const Provinces: React.FC = () => {
           >
             <Table.Header>
               <div className="mb-4">
-                <SearchForm onSearch={handleSearch} />
+                <SearchForm onSearch={handleSearch} department />
               </div>
             </Table.Header>
             <Table.Footer>
