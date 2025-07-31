@@ -3,6 +3,7 @@ import {
   PaginatedResponse,
   ElectoralTablesType,
   ElectoralTableByLocationType,
+  ElectoralTableByCodeType,
   CreateElectoralTableType,
   UpdateElectoralTableType,
 } from '../../types';
@@ -48,6 +49,17 @@ export const electoralTablesApiSlice = apiSlice.injectEndpoints({
         { type: 'ElectoralTables' as const, id },
       ],
     }),
+    getElectoralTableByTableCode: builder.query<
+      ElectoralTableByCodeType,
+      string
+    >({
+      query: (tableCode) =>
+        `/geographic/electoral-tables/table-code/${tableCode}`,
+      keepUnusedDataFor: 60,
+      providesTags: (_result, _error, tableCode) => [
+        { type: 'ElectoralTables' as const, id: `code-${tableCode}` },
+      ],
+    }),
     createElectoralTable: builder.mutation<
       ElectoralTablesType,
       CreateElectoralTableType
@@ -90,6 +102,8 @@ export const {
   useLazyGetElectoralTablesByElectoralLocationIdQuery,
   useGetElectoralTableQuery,
   useLazyGetElectoralTableQuery,
+  useGetElectoralTableByTableCodeQuery,
+  useLazyGetElectoralTableByTableCodeQuery,
   useCreateElectoralTableMutation,
   useUpdateElectoralTableMutation,
   useDeleteElectoralTableMutation,

@@ -43,6 +43,23 @@ export interface ElectoralTableByLocationType {
   __v: number;
 }
 
+// Interface for electoral table data with partially populated electoralLocationId (used by getElectoralTableByTableCode)
+export interface ElectoralTableByCodeType {
+  _id: string;
+  tableNumber: string;
+  tableCode: string;
+  electoralLocationId: {
+    _id: string;
+    address: string;
+    code: string;
+    name: string;
+  };
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 // Base interface for creating an electoral table (without server-generated fields)
 export interface CreateElectoralTableType {
   tableNumber: string;

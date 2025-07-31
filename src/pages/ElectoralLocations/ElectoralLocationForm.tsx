@@ -243,7 +243,11 @@ const ElectoralLocationForm: React.FC = () => {
           active: values.active,
           electoralSeatId: values.electoralSeatId,
           coordinates: { latitude: 0, longitude: 0 }, // Default coordinates
-          // circunscripcion: { number: 1, type: 'DEFAULT', name: 'DEFAULT' }, // Default circumscription
+          circunscripcion: {
+            number: 4,
+            type: 'Especial',
+            name: 'Especial Indígena-Tarija',
+          }, // Default circumscription
         };
         await createItem(createPayload).unwrap();
       }
