@@ -13,6 +13,10 @@ import Provinces from './pages/Provinces/Provinces';
 import ProvincesForm from './pages/Provinces/ProvincesForm';
 import Municipalities from './pages/Municipalities/Municipalities';
 import MunicipalityForm from './pages/Municipalities/MunicipalityForm';
+import ElectoralSeats from './pages/ElectoralSeats/ElectoralSeats';
+import ElectoralSeatForm from './pages/ElectoralSeats/ElectoralSeatForm';
+import ElectoralLocations from './pages/ElectoralLocations/ElectoralLocations';
+import ElectoralLocationForm from './pages/ElectoralLocations/ElectoralLocationForm';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Login = React.lazy(() => import('./pages/Auth/Login'));
@@ -108,6 +112,29 @@ const AppRouter: React.FC = () => {
             <Route
               path="/municipios/editar/:id"
               element={<MunicipalityForm />}
+            />
+
+            <Route path="/asientos-electorales" element={<ElectoralSeats />} />
+            <Route
+              path="/asientos-electorales/nuevo"
+              element={<ElectoralSeatForm />}
+            />
+            <Route
+              path="/asientos-electorales/editar/:id"
+              element={<ElectoralSeatForm />}
+            />
+
+            <Route
+              path="/recintos-electorales"
+              element={<ElectoralLocations />}
+            />
+            <Route
+              path="/recintos-electorales/nuevo"
+              element={<ElectoralLocationForm />}
+            />
+            <Route
+              path="/recintos-electorales/editar/:id"
+              element={<ElectoralLocationForm />}
             />
             {/* </Route> */}
           </Route>

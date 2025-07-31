@@ -122,8 +122,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
               </Link>
             </li>
             <li className={styles.menuItem}>
-              <Link to="/actas" className={styles.menuLink}>
-                <span className={styles.icon}>📋</span>Actas
+              <Link to="/asientos-electorales" className={styles.menuLink}>
+                <span className={styles.icon}>📋</span>Asientos Electorales
+              </Link>
+            </li>
+            <li className={styles.menuItem}>
+              <Link to="/recintos-electorales" className={styles.menuLink}>
+                <span className={styles.icon}>📋</span>Recintos Electorales
               </Link>
             </li>
           </ul>

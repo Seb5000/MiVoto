@@ -2,6 +2,7 @@ import { apiSlice } from '../apiSlice';
 import {
   PaginatedResponse,
   ElectoralSeatsType,
+  ElectoralSeatByMunicipalityType,
   CreateElectoralSeatType,
   UpdateElectoralSeatType,
 } from '../../types';
@@ -29,7 +30,7 @@ export const electoralSeatsApiSlice = apiSlice.injectEndpoints({
       providesTags: () => [{ type: 'ElectoralSeats' as const, id: 'LIST' }],
     }),
     getElectoralSeatsByMunicipalityId: builder.query<
-      ElectoralSeatsType[],
+      ElectoralSeatByMunicipalityType[],
       string
     >({
       query: (municipalityId) => ({

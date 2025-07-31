@@ -79,6 +79,7 @@ const ResultadosGenerales3 = () => {
 
   useEffect(() => {
     if (filters) {
+      console.log('Current filters:', filters);
       const cleanedFilters = Object.fromEntries(
         Object.entries(filters).filter(
           ([key, value]) => value !== '' && key !== 'electoralLocation'
@@ -141,124 +142,7 @@ const ResultadosGenerales3 = () => {
         });
     }
   }, [filters]);
-  // const { data: { results = [] } = {} } = useGetResultsQuery({
-  //   department: selectedLocation.department || undefined,
-  // });
-  // const { data: items = [] } = useGetPartidosQuery();
-  // const { data: departments = [] } = useGetDepartmentsQuery();
-  // const [getProvinces] = useLazyGetProvincesQuery();
-  // const [getMunicipalities] = useLazyGetMunicipalitiesQuery();
-  // useEffect(() => {
-  //   console.log('Selected Department:', departments);
-  // }, [departments]);
 
-  // useEffect(() => {
-  //   if (results.length && items.length) {
-  //     const combinedData = results.map((result) => {
-  //       const matchingParty = items.find(
-  //         (item) => item.partyId === result.partyId
-  //       );
-  //       return {
-  //         name: result.partyId,
-  //         value: result.totalVotes,
-  //         color: matchingParty?.color || "#000000", // fallback color if no match found
-  //       };
-  //     });
-  //     setResultsData(combinedData);
-  //   } else {
-  //     setResultsData([]);
-  //   }
-  // }, [results, items]);
-
-  // const combinedData = useMemo(() => {
-  //   if (!results?.length || !items?.length) return [];
-
-  //   return results.map((result) => {
-  //     const matchingParty = items.find(
-  //       (item) => item.partyId === result.partyId
-  //     );
-  //     return {
-  //       name: result.partyId,
-  //       value: result.totalVotes,
-  //       color: matchingParty?.color || '#000000',
-  //     };
-  //   });
-  // }, [results, items]);
-
-  // const handleDepartmentClick = (department: Department) => {
-  //   // console.log("Selected Department:", department);
-  //   //setSelectedDept(department);
-  //   console.log('Selected Department:', department);
-  // };
-
-  // const handleSelectionChange = (selection: {
-  //   department: string | null;
-  //   province: string | null;
-  //   municipality: string | null;
-  // }) => {
-  //   console.log('Selection changed:', selection);
-  //   // setSelectedLocation({
-  //   //   department: selection.departamento,
-  //   //   province: selection.provincia,
-  //   //   municipality: selection.municipio,
-  //   // });
-  //   if (
-  //     selection.department &&
-  //     selection.department !== selectedLocation.department
-  //   ) {
-  //     console.log('calling getProvinces with:', selection.department);
-  //     getProvinces(selection.department).then((response) => {
-  //       setProvinces(response.data ?? []);
-  //     });
-  //     setSelectedLocation({
-  //       department: selection.department,
-  //       province: null,
-  //       municipality: null,
-  //     });
-  //   } else if (
-  //     selection.department &&
-  //     selection.province &&
-  //     selection.province !== selectedLocation.province
-  //   ) {
-  //     console.log('calling getMunicipalities with:', {
-  //       department: selection.department,
-  //       province: selection.province,
-  //     });
-  //     getMunicipalities({
-  //       department: selection.department,
-  //       province: selection.province,
-  //     }).then((response) => {
-  //       setMunicipalities(response.data ?? []);
-  //     });
-  //     setSelectedLocation({
-  //       department: selection.department,
-  //       province: selection.province,
-  //       municipality: null,
-  //     });
-  //   } else if (selection.department === null) {
-  //     setSelectedLocation({
-  //       department: null,
-  //       province: null,
-  //       municipality: null,
-  //     });
-  //   }
-
-  //   // if (selection.departamento) {
-  //   //   setSelectedDept(selection.departamento);
-  //   //   getProvinces(selection.departamento).then((response) => {
-  //   //     const formatedProvinces = (response.data ?? []).map((prov) => ({
-  //   //       value: prov,
-  //   //       name: prov,
-  //   //     }));
-  //   //     setProvinces(formatedProvinces);
-  //   //   });
-  //   // }
-  //   // if (selection.province) {
-  //   //   getMunicipalities(selection.province).then((response) => {
-  //   //     setMunicipalities(response.data || []);
-  //   //   });
-  //   // }
-  // };
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="container mx-auto max-w-7xl">
